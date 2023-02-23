@@ -9,25 +9,32 @@ main() {
           .split(' ');
   final seed = Mnemonic.toSeed(mnemonic);
 
-  final hdWallet = HDWallet.fromSeed(seed, 0, Purpose.BIP44);
-  final rootKey = hdWallet.getPrivateKeyByPath('m');
+  final hdWallet = HDWallet.fromSeed(seed: seed);
+  final rootKey = hdWallet.getPrivateKeyByPath(path: 'm');
 
-  print('bip32 extended privKey: ${rootKey.serializePrivate(HDExtendedKeyVersion.xprv.value)}');
+  print(
+      'bip32 extended privKey: ${rootKey.serializePrivate(HDExtendedKeyVersion.xprv.value)}');
 
-  print('bip32 extended pubKey: ${rootKey.serializePublic(HDExtendedKeyVersion.xpub.value)}');
+  print(
+      'bip32 extended pubKey: ${rootKey.serializePublic(HDExtendedKeyVersion.xpub.value)}');
 
-  final bip44Key = hdWallet.getPrivateKeyByPath("m/44'/0'/0'");
-  
-  print('bip44 account extended privKey: ${bip44Key.serializePrivate(HDExtendedKeyVersion.xprv.value)}');
+  final bip44Key = hdWallet.getPrivateKeyByPath(path: "m/44'/0'/0'");
 
-  print('bip44 account extended pubKey: ${bip44Key.serializePublic(HDExtendedKeyVersion.xpub.value)}');
-  
-  final address0Key = hdWallet.getPrivateKeyByPath("m/44'/0'/0'/0/0");
+  print(
+      'bip44 account0 extended privKey: ${bip44Key.serializePrivate(HDExtendedKeyVersion.xprv.value)}');
 
-  print('address0: ${base58checkCodec.encode(Base58CheckPayload(0, address0Key.pubKeyHash))}');
+  print(
+      'bip44 account0 extended pubKey: ${bip44Key.serializePublic(HDExtendedKeyVersion.xpub.value)}');
 
-  final address1Key = hdWallet.getPrivateKeyByPath("m/44'/0'/0'/0/1");
+  final address0Key = hdWallet.getPrivateKey(
+      purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 0);
 
-  print('address1: ${base58checkCodec.encode(Base58CheckPayload(0, address1Key.pubKeyHash))}');
-  
+  print(
+      'address0: ${base58checkCodec.encode(Base58CheckPayload(0, address0Key.pubKeyHash))}');
+
+  final address1Key = hdWallet.getPrivateKey(
+      purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 1);
+
+  print(
+      'address1: ${base58checkCodec.encode(Base58CheckPayload(0, address1Key.pubKeyHash))}');
 }

@@ -17,32 +17,43 @@ enum Purpose {
 
 class HDWallet {
   late final HDKeychain _hdKeychain;
-  late final int _coinType;
-  late final Purpose _purpose;
 
-  HDWallet.fromSeed(Uint8List seed, int coinType, Purpose purpose) {
+  HDWallet.fromSeed({required Uint8List seed}) {
     _hdKeychain = HDKeychain.fromSeed(seed);
-    _coinType = coinType;
-    _purpose = purpose;
   }
 
-  @visibleForTesting
-  HDWallet.fromKey(HDKey masterKey, int coinType, Purpose purpose) {
+  HDWallet.fromKey(HDKey masterKey) {
     _hdKeychain = HDKeychain(masterKey);
-    _coinType = coinType;
-    _purpose = purpose;
   }
 
-  HDPublicKey getPublicKey(int account, int change, int index) {
-    return HDPublicKey(getPrivateKey(account, change, index));
+  HDPublicKey getPublicKey({
+    required Purpose purpose,
+    required int coinType,
+    required int account,
+    required int change,
+    required int index,
+  }) {
+    return HDPublicKey(getPrivateKey(
+      purpose: purpose,
+      coinType: coinType,
+      account: account,
+      change: change,
+      index: index,
+    ));
   }
 
-  HDKey getPrivateKey(int account, int change, int index) {
+  HDKey getPrivateKey({
+    required Purpose purpose,
+    required int coinType,
+    required int account,
+    required int change,
+    required int index,
+  }) {
     return getPrivateKeyByPath(
-        "m/${_purpose.value}'/$_coinType'/$account'/$change/$index");
+        path: "m/${purpose.value}'/$coinType'/$account'/$change/$index");
   }
 
-  HDKey getPrivateKeyByPath(String path) {
+  HDKey getPrivateKeyByPath({required String path}) {
     return _hdKeychain.getKeyByPath(path);
   }
 }
