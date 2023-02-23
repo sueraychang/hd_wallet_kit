@@ -3,40 +3,31 @@ import 'dart:core';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:hd_wallet_kit/hd_wallet_kit.dart';
+import 'package:hd_wallet_kit/src/hdwalletkitexception.dart';
+import 'package:hd_wallet_kit/src/wordlist.dart';
+import 'package:hd_wallet_kit/utils.dart';
 import 'package:pointycastle/digests/sha512.dart';
 import 'package:pointycastle/key_derivators/api.dart';
 import 'package:pointycastle/key_derivators/pbkdf2.dart';
 import 'package:pointycastle/macs/hmac.dart';
 
-enum EntropyStrength { minimum, low, medium, high, veryHigh }
+enum EntropyStrength {
+  minimum(128),
+  low(160),
+  medium(192),
+  high(224),
+  veryHigh(256);
 
-extension _EntropyStrengthExtension on EntropyStrength {
-  int get entropyLength {
-    switch (this) {
-      case EntropyStrength.minimum:
-        return 128;
-      case EntropyStrength.low:
-        return 160;
-      case EntropyStrength.medium:
-        return 192;
-      case EntropyStrength.high:
-        return 224;
-      case EntropyStrength.veryHigh:
-        return 256;
-    }
-  }
+  final int entropyLength;
+  const EntropyStrength(this.entropyLength);
 
   int get checksumLength => entropyLength ~/ 32;
-
   int get totalLength => entropyLength + checksumLength;
-
   int get wordCount => checksumLength * 3;
-}
 
-EntropyStrength fromWordCount({required int wordCount}) {
-  switch (wordCount) {
-    case 12:
+  static EntropyStrength _fromWordCount(int wordCount) {
+    switch (wordCount) {
+      case 12:
       return EntropyStrength.minimum;
     case 15:
       return EntropyStrength.low;
@@ -48,6 +39,7 @@ EntropyStrength fromWordCount({required int wordCount}) {
       return EntropyStrength.veryHigh;
     default:
       throw InvalidMnemonicCountException(message: 'count: $wordCount');
+    }
   }
 }
 
@@ -105,7 +97,7 @@ class Mnemonic {
   }
 
   static Uint8List toEntropy(List<String> mnemonicKeys, WordList wordlist) {
-    final strength = fromWordCount(wordCount: mnemonicKeys.length);
+    final strength = EntropyStrength._fromWordCount(mnemonicKeys.length);
     final entropy = Uint8List(strength.entropyLength ~/ 8);
 
     String totalBits = '';

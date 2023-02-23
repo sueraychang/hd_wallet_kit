@@ -34,6 +34,12 @@ class ChecksumException extends HDWalletKitException {
       : super('MnemonicException: $message');
 }
 
+// HDKeyDerivation
+class HDKeyDerivationException extends HDWalletKitException {
+  const HDKeyDerivationException(String message)
+      : super('HDKeyDerivation: $message');
+}
+
 // HDExtendedKey
 class WrongVersionException extends HDWalletKitException {
   const WrongVersionException(String message)

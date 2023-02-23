@@ -1,4 +1,5 @@
 import 'package:hd_wallet_kit/hd_wallet_kit.dart';
+import 'package:hd_wallet_kit/utils.dart';
 
 main() {
   final mnemonic = Mnemonic.generate();

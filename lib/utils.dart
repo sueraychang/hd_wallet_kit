@@ -1,16 +1,14 @@
+library utils;
+
 import 'dart:typed_data';
 
+import 'package:base58check/base58.dart';
+import 'package:base58check/base58check.dart';
 import 'package:pointycastle/api.dart';
 import 'package:pointycastle/digests/ripemd160.dart';
 import 'package:pointycastle/digests/sha256.dart';
 import 'package:pointycastle/digests/sha512.dart';
 import 'package:pointycastle/macs/hmac.dart';
-
-Uint8List hmacSha512(Uint8List key, Uint8List input) {
-  final hmac = HMac(SHA512Digest(), 128);
-  hmac.init(KeyParameter(key));
-  return hmac.process(input);
-}
 
 String uint8ListToHexString(Uint8List input) {
   return input.map((e) => e.toRadixString(16).padLeft(2, '0')).join();
@@ -50,3 +48,14 @@ Uint8List doubleSHA256Digest(Uint8List input) {
 Uint8List sha256Hash160(Uint8List input) {
   return RIPEMD160Digest().process(SHA256Digest().process(input));
 }
+
+Uint8List hmacSha512(Uint8List key, Uint8List input) {
+  final hmac = HMac(SHA512Digest(), 128);
+  hmac.init(KeyParameter(key));
+  return hmac.process(input);
+}
+
+const String _alphabet =
+    '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+Base58CheckCodec base58checkCodec = Base58CheckCodec(_alphabet);
+Base58Codec base58codec = const Base58Codec(_alphabet);

@@ -12,6 +12,9 @@ dependencies:
     sdk: flutter
 
   pointycastle: ^3.6.2
+  convert: ^3.1.1
+  meta: ^1.8.0
+  base58check: ^2.0.0
 
 dev_dependencies:
   flutter_test:
