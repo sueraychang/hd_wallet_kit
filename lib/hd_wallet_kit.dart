@@ -1,7 +1,6 @@
 library hd_wallet_kit;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/mnemonic.dart';
+export 'src/wordlist.dart';
+export 'src/utils.dart';
+export 'src/hdwalletkitexception.dart';
