@@ -23,6 +23,8 @@ Inspired by [hd-wallet-kit-android](https://github.com/horizontalsystems/hd-wall
 ### Mnemonic
 * Generate mnemonic
 * From mnemonic to seed
+* From mnemonic to entropy
+* Validate mnemonic
 
 ### HD Wallet
 * Create HD wallet from seed

@@ -4,10 +4,11 @@ import 'package:hd_wallet_kit/src/hdextendedkeyversion.dart';
 import 'package:hd_wallet_kit/utils.dart';
 
 main() {
-  final mnemonic =
-      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about'
-          .split(' ');
+  final mnemonic = Mnemonic.generate();
+  print('Generated mnemonic: ${mnemonic.join(' ')}');
+
   final seed = Mnemonic.toSeed(mnemonic);
+  print('Mnemonic to seed: ${uint8ListToHexString(seed)}');
 
   final hdWallet = HDWallet.fromSeed(seed: seed);
   final rootKey = hdWallet.getPrivateKeyByPath(path: 'm');

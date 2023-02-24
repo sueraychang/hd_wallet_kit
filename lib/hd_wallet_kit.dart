@@ -5,3 +5,4 @@ export 'src/hdwallet.dart';
 export 'src/hdkey.dart';
 export 'src/wordlist.dart';
 export 'src/hdwalletkitexception.dart';
+export 'src/hdextendedkeyversion.dart';
