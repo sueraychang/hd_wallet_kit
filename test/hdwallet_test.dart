@@ -4,8 +4,10 @@ import 'package:base58check/base58check.dart';
 import 'package:convert/convert.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hd_wallet_kit/src/hdextendedkey.dart';
+import 'package:hd_wallet_kit/src/hdextendedkeyversion.dart';
 import 'package:hd_wallet_kit/src/hdwallet.dart';
 import 'package:hd_wallet_kit/src/hdwalletkitexception.dart';
+import 'package:hd_wallet_kit/src/mnemonic.dart';
 import 'package:hd_wallet_kit/utils.dart';
 
 void main() {
@@ -23,31 +25,37 @@ void main() {
     return base58checkCodec.encode(Base58CheckPayload(0, pubKeyHash));
   }
 
-  final seed = hexStringToUint8List(
-      '5eb00bbddcf069084889a8ab9155568165f5c453ccb85e70811aaed6f6da5fc19a5ac40b389cd370d086206dec8aa6c43daea6690f20ad3d8d48b2d2ce9e38e4');
+  final mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about'
+          .split(' ');
+  final seed = Mnemonic.toSeed(mnemonic);
   final hdWallet = HDWallet.fromSeed(seed: seed);
 
   group('hdwallet', () {
     test('receiveAddress on mainnet', () {
-      final hdPublicKey = hdWallet.getPublicKey(purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 0);
+      final hdPublicKey = hdWallet.getPublicKey(
+          purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 0);
       expect(hex.encode(hdPublicKey.publicKey),
           '03aaeb52dd7494c361049de67cc680e83ebcbbbdbeb13637d92cd845f70308af5e');
     });
 
     test('receiveAddress on testnet', () {
-      final hdPublicKey = hdWallet.getPublicKey(purpose: Purpose.BIP44, coinType: 1, account: 0, change: 0, index: 0);
+      final hdPublicKey = hdWallet.getPublicKey(
+          purpose: Purpose.BIP44, coinType: 1, account: 0, change: 0, index: 0);
       expect(hex.encode(hdPublicKey.publicKey),
           '02a7451395735369f2ecdfc829c0f774e88ef1303dfe5b2f04dbaab30a535dfdd6');
     });
 
     test('changeAddress on mainnet', () {
-      final hdPublicKey = hdWallet.getPublicKey(purpose: Purpose.BIP44, coinType: 0, account: 0, change: 1, index: 0);
+      final hdPublicKey = hdWallet.getPublicKey(
+          purpose: Purpose.BIP44, coinType: 0, account: 0, change: 1, index: 0);
       expect(hex.encode(hdPublicKey.publicKey),
           '03498b3ac8e882c5d693540c49adf22b7a1b99c1bb8047966739bfe8cdeb272e64');
     });
 
     test('changeAddress on testnet', () {
-      final hdPublicKey = hdWallet.getPublicKey(purpose: Purpose.BIP44, coinType: 1, account: 0, change: 1, index: 0);
+      final hdPublicKey = hdWallet.getPublicKey(
+          purpose: Purpose.BIP44, coinType: 1, account: 0, change: 1, index: 0);
       expect(hex.encode(hdPublicKey.publicKey),
           '0320282ac6b3782721b1742c294530a9f250413361abbff659acc8352bc4c1f3f1');
     });
@@ -56,8 +64,7 @@ void main() {
       final hdExtendedKey = HDExtendedKey(
           'xpub6CudKadFxkN6jXWcJDJSWzt4tNt86ThhYEjtcTywfD5nsYcySEEhfGugKDLnv14ZDNnYBVbfYXbNvRp8cNNw9JAfoMTeph1BqGWYZA4DBDi');
 
-      final hdWallet =
-          HDWallet.fromKey(hdExtendedKey.key);
+      final hdWallet = HDWallet.fromKey(hdExtendedKey.key);
       final privateKey = hdWallet.getPrivateKeyByPath(path: "m/0/0");
 
       expect(
@@ -71,8 +78,7 @@ void main() {
       final hdExtendedKey = HDExtendedKey(
           'xprv9yvGv56N8NooX3S9CBmS9rwLLM3dgzyrB1pHp5aL6sYozkHptgvT7UbCTuyXF1HUAaPiG24iDBbnp7EQr8eSJkANf9EodqUiATBXrtAAHjj');
 
-      final hdWallet =
-          HDWallet.fromKey(hdExtendedKey.key);
+      final hdWallet = HDWallet.fromKey(hdExtendedKey.key);
       final privateKey = hdWallet.getPrivateKeyByPath(path: "m/0/0");
 
       expect(
@@ -90,7 +96,12 @@ void main() {
           'yprvABrGsX5C9jantLFKTZNpFi2c6RKLw87EhgjRLMzdbwp5NjLsUR1oC2kte6k5YXy9hsCSSBVUtJL5XKwF1oFrofumWE3rFKRx6drdQQpkcR4');
 
       final hdWallet = HDWallet.fromKey(hdExtendedKey.key);
-      final privateKey = hdWallet.getPrivateKey(purpose: hdExtendedKey.info.purpose, coinType: 0, account: 0, change: 0, index: 0);
+      final privateKey = hdWallet.getPrivateKey(
+          purpose: hdExtendedKey.info.purpose,
+          coinType: 0,
+          account: 0,
+          change: 0,
+          index: 0);
 
       expect(uint8ListToHexString(privateKey.pubKey),
           '022d00ba4f264cd0d103ab4fe68cab0dbfbc7684476ef14feeb8d474408ab320cd');
@@ -144,6 +155,44 @@ void main() {
                   'ypub6X59Mttd4t5SX4wYvJS8ni7DHetGnv4bekdH2JUoJTVGGiUzjH4K9S5d7a8bDMkqn7cY8zu5q9UDKKZMALo3w1wQ6NhwESGt5AvRZHRDMk6')
               .serializePrivate(),
           throwsA(const TypeMatcher<IllegalArgumentException>()));
+    });
+
+    test('hdwallet root extended privKey', () {
+      final rootKey = hdWallet.getPrivateKeyByPath(path: 'm');
+      expect(rootKey.serializePrivate(HDExtendedKeyVersion.xprv.value),
+          'xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDvSnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu');
+    });
+
+    test('hdwallet root extended pubKey', () {
+      final rootKey = hdWallet.getPrivateKeyByPath(path: 'm');
+      expect(rootKey.serializePublic(HDExtendedKeyVersion.xpub.value),
+          'xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8');
+    });
+
+    test('hdwallet bip44 account 0 extended privKey', () {
+      final bip44Key = hdWallet.getPrivateKeyByPath(path: "m/44'/0'/0'");
+      expect(bip44Key.serializePrivate(HDExtendedKeyVersion.xprv.value),
+          'xprv9xpXFhFpqdQK3TmytPBqXtGSwS3DLjojFhTGht8gwAAii8py5X6pxeBnQ6ehJiyJ6nDjWGJfZ95WxByFXVkDxHXrqu53WCRGypk2ttuqncb');
+    });
+
+    test('hdwallet bip44 account0 extended pubKey', () {
+      final bip44Key = hdWallet.getPrivateKeyByPath(path: "m/44'/0'/0'");
+      expect(bip44Key.serializePublic(HDExtendedKeyVersion.xpub.value),
+          'xpub6BosfCnifzxcFwrSzQiqu2DBVTshkCXacvNsWGYJVVhhawA7d4R5WSWGFNbi8Aw6ZRc1brxMyWMzG3DSSSSoekkudhUd9yLb6qx39T9nMdj');
+    });
+
+    test('hdwallet bip44 address index 0', () {
+      final address0Key = hdWallet.getPrivateKey(
+      purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 0);
+      expect(base58checkCodec.encode(Base58CheckPayload(0, address0Key.pubKeyHash)),
+          '1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA');
+    });
+
+    test('hdwallet bip44 address index 1', () {
+      final address1Key = hdWallet.getPrivateKey(
+      purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 1);
+      expect(base58checkCodec.encode(Base58CheckPayload(0, address1Key.pubKeyHash)),
+          '1Ak8PffB2meyfYnbXZR9EGfLfFZVpzJvQP');
     });
   });
 }
