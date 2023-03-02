@@ -23,9 +23,9 @@ enum WordList {
       case WordList.spanish:
         return _spanish;
       case WordList.simplifiedChinese:
-        return _chinese_simplified;
+        return _chineseSimplified;
       case WordList.traditionalChinese:
-        return _chinese_traditional;
+        return _chineseTraditional;
       case WordList.french:
         return _french;
       case WordList.italian:
@@ -8251,7 +8251,7 @@ zumo
 zurdo
 ''');
 
-final List<String> _chinese_simplified = const LineSplitter().convert('''
+final List<String> _chineseSimplified = const LineSplitter().convert('''
 的
 一
 是
@@ -10302,7 +10302,7 @@ final List<String> _chinese_simplified = const LineSplitter().convert('''
 歇
 ''');
 
-final List<String> _chinese_traditional = const LineSplitter().convert('''
+final List<String> _chineseTraditional = const LineSplitter().convert('''
 的
 一
 是

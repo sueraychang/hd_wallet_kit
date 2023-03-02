@@ -1,12 +1,14 @@
+// ignore_for_file: non_constant_identifier_names, implementation_imports
+
 import 'dart:convert';
 import 'dart:typed_data';
 
-// ignore: implementation_imports
 import 'package:hd_wallet_kit/src/eckey.dart';
 import 'package:hd_wallet_kit/src/hdkey.dart';
 import 'package:hd_wallet_kit/src/hdwalletkitexception.dart';
 import 'package:hd_wallet_kit/utils.dart';
 import 'package:pointycastle/export.dart';
+
 import 'package:pointycastle/src/utils.dart' as utils;
 
 /// From the BIP32 spec. Used when calculating the hmac of the seed

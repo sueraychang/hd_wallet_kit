@@ -2,7 +2,10 @@
 
 import 'dart:typed_data';
 
+import 'package:base58check/base58check.dart';
+import 'package:hd_wallet_kit/src/base58.dart';
 import 'package:hd_wallet_kit/src/eckey.dart';
+import 'package:hd_wallet_kit/src/hdextendedkeyversion.dart';
 import 'package:hd_wallet_kit/src/hdwalletkitexception.dart';
 import 'package:hd_wallet_kit/utils.dart';
 import 'package:pointycastle/digests/sha256.dart';
@@ -38,7 +41,17 @@ class HDKey extends ECKey {
     this._depth,
     this._childNumber,
     this._isHardened,
-  ) : super.withPrivKey(privKey, true);
+  ) : super.withPrivKey(privKey, true) {
+    if (privKeyBytes!.length > 33) {
+      throw IllegalArgumentException('Private key is longer than 33 bytes');
+    }
+    if (_chainCode.length != 32) {
+      throw IllegalArgumentException('Chain code is not 32 bytes');
+    }
+    if (pubKey.length != 33) {
+      throw IllegalArgumentException('Public key is not compressed');
+    }
+  }
 
   HDKey.withPubKey(
     Uint8List pubKey,
@@ -57,12 +70,12 @@ class HDKey extends ECKey {
     }
   }
 
-  String serializePublic(int version) {
-    return _toBase58(_serialize(version, pubKey));
+  String serializePublic(HDExtendedKeyVersion version) {
+    return _toBase58(_serialize(version.value, pubKey));
   }
 
-  String serializePrivate(int version) {
-    return _toBase58(_serialize(version, getPaddedPrivKeyBytes()));
+  String serializePrivate(HDExtendedKeyVersion version) {
+    return _toBase58(_serialize(version.value, getPaddedPrivKeyBytes()));
   }
 
   Uint8List _serialize(int version, Uint8List key) {
@@ -80,13 +93,16 @@ class HDKey extends ECKey {
   }
 
   String _toBase58(Uint8List ser) {
-    return base58codec.encode(addChecksum(ser));
+    return base58codec.encode(_addChecksum(ser));
   }
 
   Uint8List getPaddedPrivKeyBytes() {
     final paddedBytes = Uint8List(33);
-    paddedBytes[0] = 0;
-    paddedBytes.setAll(1, privKeyBytes!);
+    final length = privKeyBytes!.length;
+    for (int i = 0; i < 33 - length; ++i) {
+      paddedBytes[i] = 0;
+    }
+    paddedBytes.setAll(33 - length, privKeyBytes!);
     return paddedBytes;
   }
 
@@ -97,7 +113,11 @@ class HDKey extends ECKey {
         (pubKeyHash[3] & 255);
   }
 
-  static Uint8List addChecksum(Uint8List input) {
+  String encodeAddress() {
+    return base58checkCodec.encode(Base58CheckPayload(0, pubKeyHash));
+  }
+
+  static Uint8List _addChecksum(Uint8List input) {
     final output = BytesBuilder();
     output.add(input);
     final checksum =

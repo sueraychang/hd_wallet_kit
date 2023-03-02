@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:hd_wallet_kit/src/hdwallet.dart';
 import 'package:hd_wallet_kit/src/hdwalletkitexception.dart';
 

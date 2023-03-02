@@ -2,8 +2,6 @@ library utils;
 
 import 'dart:typed_data';
 
-import 'package:base58check/base58.dart';
-import 'package:base58check/base58check.dart';
 import 'package:pointycastle/api.dart';
 import 'package:pointycastle/digests/ripemd160.dart';
 import 'package:pointycastle/digests/sha256.dart';
@@ -54,8 +52,3 @@ Uint8List hmacSha512(Uint8List key, Uint8List input) {
   hmac.init(KeyParameter(key));
   return hmac.process(input);
 }
-
-const String _alphabet =
-    '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-Base58CheckCodec base58checkCodec = Base58CheckCodec(_alphabet);
-Base58Codec base58codec = const Base58Codec(_alphabet);

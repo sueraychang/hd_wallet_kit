@@ -6,6 +6,7 @@ import 'package:hd_wallet_kit/src/hdwalletkitexception.dart';
 import 'package:hd_wallet_kit/utils.dart';
 import 'package:pointycastle/pointycastle.dart';
 
+// ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as utils;
 
 class ECKey {

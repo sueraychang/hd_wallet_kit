@@ -44,6 +44,8 @@ enum EntropyStrength {
 }
 
 class Mnemonic {
+
+  /// Generate mnemonic keys
   static List<String> generate([
     EntropyStrength strength = EntropyStrength.minimum,
     WordList wordList = WordList.english,
@@ -56,6 +58,7 @@ class Mnemonic {
     return toMnemonic(entropy, wordList);
   }
 
+  /// Convert entropy data to mnemonic word list.
   static List<String> toMnemonic(Uint8List entropy, WordList wordList) {
     if (entropy.isEmpty) {
       throw EmptyEntropyException(message: 'Entropy is empty.');
@@ -73,6 +76,7 @@ class Mnemonic {
         .toList();
   }
 
+  /// Convert mnemonic keys to seed
   static Uint8List toSeed(List<String> mnemonicKeys, [String passphrase = '']) {
     validate(mnemonicKeys);
 
@@ -84,6 +88,8 @@ class Mnemonic {
     return derivator.process(Uint8List.fromList(mnemonicString.codeUnits));
   }
 
+  /// Validate mnemonic keys. Since validation
+  /// requires deriving the original entropy, this function is the same as calling [toEntropy]
   static void validate(List<String> mnemonicKeys) {
     WordList approprateWordList = WordList.english;
     for (var wordList in WordList.values) {
@@ -96,6 +102,13 @@ class Mnemonic {
     toEntropy(mnemonicKeys, approprateWordList);
   }
 
+  /// Get the original entropy that was used to create this MnemonicCode. This call will fail
+  /// if the words have an invalid length or checksum.
+  ///
+  /// @throws [InvalidMnemonicCountException] when the word count is zero or not a multiple of 3.
+  /// @throws [ChecksumException] if the checksum does not match the expected value.
+  ///
+  ///
   static Uint8List toEntropy(List<String> mnemonicKeys, WordList wordlist) {
     final strength = EntropyStrength._fromWordCount(mnemonicKeys.length);
     final entropy = Uint8List(strength.entropyLength ~/ 8);

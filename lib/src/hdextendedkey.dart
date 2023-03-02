@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:hd_wallet_kit/src/base58.dart';
 import 'package:hd_wallet_kit/src/hdextendedkeyversion.dart';
 import 'package:hd_wallet_kit/src/hdkey.dart';
 import 'package:hd_wallet_kit/src/hdkeyderivation.dart';
@@ -7,6 +8,7 @@ import 'package:hd_wallet_kit/src/hdwallet.dart';
 import 'package:hd_wallet_kit/src/hdwalletkitexception.dart';
 import 'package:hd_wallet_kit/utils.dart';
 
+// ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as utils;
 
 enum DerivedType {
@@ -59,9 +61,9 @@ class HDExtendedKey {
     }
   }
 
-  String serializePublic() => key.serializePublic(_version.pubKey.value);
+  String serializePublic() => key.serializePublic(_version.pubKey);
 
-  String serializePrivate() => key.serializePrivate(_version.privKey.value);
+  String serializePrivate() => key.serializePrivate(_version.privKey);
 
   String serialize() => key.hasPrivKey ? serializePrivate() : serializePublic();
 

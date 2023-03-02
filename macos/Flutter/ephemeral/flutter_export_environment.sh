@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=/Users/robin/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/robin/MyProjects/hd_wallet_kit/hd_wallet_kit"
+export "FLUTTER_APPLICATION_PATH=/Users/robin/MyProjects/hd_wallet_kit"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=0.0.1"

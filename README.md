@@ -11,10 +11,12 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
-A Flutter HD Wallet package which provides 
-implementation of Hierarchical Deterministic Wallets [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki),
-Mnemonic code for generating deterministic keys [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki),
-and Multi-Account Hierarchy for Deterministic Wallets [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki).
+# hd_wallet_kit
+
+A Flutter HD Wallet package which provides implementation of:
+* Hierarchical Deterministic Wallets [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki),
+* Mnemonic code for generating deterministic keys [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki),
+* and Multi-Account Hierarchy for Deterministic Wallets [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki).
 
 Inspired by [hd-wallet-kit-android](https://github.com/horizontalsystems/hd-wallet-kit-android)
 
@@ -67,6 +69,19 @@ final hdWallet = HDWallet.fromSeed(seed: seed);
 
 Key derivation:
 ```dart
-final key = hdWallet.getPrivateKeyByPath("m/0");
-final bip44Key = hdWallet.getPrivateKey(purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 0);
+final key = hdWallet.deriveChildKeyByPath("m/0");
+final bip44Key = hdWallet.deriveChildKey(purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 0);
+```
+
+Key serialization:
+```dart
+final key = hdWallet.deriveChildKey(purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 0);
+final accountExtendedPubKey = key.serializePublic(HDExtendedKeyVersion.xpub);
+final accountExtendedPrivKey = key.serializePublic(HDExtendedKeyVersion.xprv);
+```
+
+Encode address:
+```dart
+final key = hdWallet.deriveChildKey(purpose: Purpose.BIP44, coinType: 0, account: 0, change: 0, index: 0);
+final address = key.encodeAddress();
 ```

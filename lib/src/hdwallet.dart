@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:hd_wallet_kit/src/hdkey.dart';
 import 'package:hd_wallet_kit/src/hdkeychain.dart';
 import 'package:hd_wallet_kit/src/hdpublickey.dart';
-import 'package:meta/meta.dart';
 
 enum Purpose {
   BIP44(44),
@@ -33,7 +32,7 @@ class HDWallet {
     required int change,
     required int index,
   }) {
-    return HDPublicKey(getPrivateKey(
+    return HDPublicKey(deriveKey(
       purpose: purpose,
       coinType: coinType,
       account: account,
@@ -42,18 +41,18 @@ class HDWallet {
     ));
   }
 
-  HDKey getPrivateKey({
+  HDKey deriveKey({
     required Purpose purpose,
     required int coinType,
     required int account,
     required int change,
     required int index,
   }) {
-    return getPrivateKeyByPath(
+    return deriveKeyByPath(
         path: "m/${purpose.value}'/$coinType'/$account'/$change/$index");
   }
 
-  HDKey getPrivateKeyByPath({required String path}) {
+  HDKey deriveKeyByPath({required String path}) {
     return _hdKeychain.getKeyByPath(path);
   }
 }
