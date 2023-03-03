@@ -15,6 +15,12 @@ import 'package:pointycastle/src/utils.dart' as utils;
 final Uint8List _masterKey = utf8.encoder.convert('Bitcoin seed');
 
 class HDKeyDerivation {
+
+  /// Generate a root key from the given seed.  The seed must be at least 128 bits.
+  ///
+  /// @param seed HD seed
+  /// @return Root key
+  /// @throws HDKeyDerivationException Generated master key is invalid
   static HDKey createRootKey(Uint8List seed) {
     if (seed.length < 16) {
       throw IllegalArgumentException('seed must be at least 128 bits');
@@ -36,6 +42,22 @@ class HDKeyDerivation {
     return HDKey.withPrivKey(privKey, hashr, null, 0, 0, 0, false);
   }
 
+  /// Derive a child key from the specified parent.
+  /// 
+  /// The parent must have a private key in order to derive a private/public key pair.
+  /// If the parent does not have a private key, only the public key can be derived.
+  /// In addition, a hardened key cannot be derived from a public key since the algorithm requires
+  /// the parent private key.
+  /// 
+  /// It is possible for key derivation to fail for a child number because the generated
+  /// key is not valid.  If this happens, the application should generate a key using
+  /// a different child number.
+  ///
+  /// @param parent      Parent key
+  /// @param childNumber Child number
+  /// @param hardened    TRUE to create a hardened key
+  /// @return Derived key
+  /// @throws HDKeyDerivationException Unable to derive key
   static HDKey deriveChildKey(HDKey parent, int childNumber, bool hardened) {
     if ((childNumber & HDKey.HARDENED_FLAG) != 0) {
       throw IllegalArgumentException(
@@ -52,6 +74,13 @@ class HDKeyDerivation {
     }
   }
 
+  /// Derive a child key from a private key
+  ///
+  /// @param parent      Parent key
+  /// @param childNumber Child number
+  /// @param hardened    TRUE to create a hardened key
+  /// @return Derived key
+  /// @throws HDKeyDerivationException Unable to derive key
   static HDKey _derivePrivateKey(HDKey parent, int childNumber, bool hardened) {
     Uint8List parentPubKey = parent.pubKey;
     if (parentPubKey.length != 33) {
@@ -89,6 +118,12 @@ class HDKeyDerivation {
     );
   }
 
+  /// Derive a child key from a public key
+  ///
+  /// @param parent      Parent key
+  /// @param childNumber Child number
+  /// @return Derived key
+  /// @throws HDKeyDerivationException Unable to derive key
   static HDKey _derivePublicKey(HDKey parent, int childNumber) {
     var dataBuffer = Uint8List(37);
     dataBuffer.setAll(0, parent.pubKey);

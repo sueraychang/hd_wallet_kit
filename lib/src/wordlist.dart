@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+/// WordList defined in https://github.com/bitcoin/bips/blob/master/bip-0039/bip-0039-wordlists.md.
 enum WordList {
   english,
   japanese,

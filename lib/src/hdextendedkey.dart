@@ -41,11 +41,19 @@ class HDExtendedKey {
         _version.isPublic,
       );
 
+  /// Return extended key by serialized key
+  ///
+  /// @return HDExtendedKey
   HDExtendedKey(String serialized) {
     key = _keyFromSerialized(serialized);
     _version = _versionFromSerialized(serialized);
   }
 
+  /// Return extended key by seed & purpose
+  ///
+  /// @param seed        Seed
+  /// @param purpose     Wallet purpose
+  /// @return HDExtendedKey
   HDExtendedKey.fromSeed(Uint8List seed, Purpose purpose) {
     key = HDKeyDerivation.createRootKey(seed);
     switch (purpose) {
@@ -61,10 +69,13 @@ class HDExtendedKey {
     }
   }
 
+  /// Serialize the extended public key.
   String serializePublic() => key.serializePublic(_version.pubKey);
 
+  /// Serialize the extended private key.
   String serializePrivate() => key.serializePrivate(_version.privKey);
 
+  /// Serialize the extended key.
   String serialize() => key.hasPrivKey ? serializePrivate() : serializePublic();
 
   static const int _length = 82;

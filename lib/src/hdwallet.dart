@@ -17,14 +17,17 @@ enum Purpose {
 class HDWallet {
   late final HDKeychain _hdKeychain;
 
+  /// Create HDWallet using Uint8List seed.
   HDWallet.fromSeed({required Uint8List seed}) {
     _hdKeychain = HDKeychain.fromSeed(seed);
   }
 
+  /// Create HDWallet using HDkey.
   HDWallet.fromKey(HDKey masterKey) {
     _hdKeychain = HDKeychain(masterKey);
   }
 
+  /// Get the public key of the HDWallet.
   HDPublicKey getPublicKey({
     required Purpose purpose,
     required int coinType,
@@ -41,6 +44,7 @@ class HDWallet {
     ));
   }
 
+  /// Child key derivation using m / purpose' / coin_type' / account' / change / index .
   HDKey deriveKey({
     required Purpose purpose,
     required int coinType,
@@ -52,6 +56,7 @@ class HDWallet {
         path: "m/${purpose.value}'/$coinType'/$account'/$change/$index");
   }
 
+  /// Child key derivation using path.
   HDKey deriveKeyByPath({required String path}) {
     return _hdKeychain.getKeyByPath(path);
   }

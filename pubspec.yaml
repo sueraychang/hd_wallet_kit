@@ -1,6 +1,6 @@
 name: hd_wallet_kit
 description: A Flutter HD Wallet package which provides implementation of BIP32, BIP39 and BIP44.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/sueraychang/hd_wallet_kit
 
 environment:

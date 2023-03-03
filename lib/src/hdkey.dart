@@ -10,6 +10,7 @@ import 'package:hd_wallet_kit/src/hdwalletkitexception.dart';
 import 'package:hd_wallet_kit/utils.dart';
 import 'package:pointycastle/digests/sha256.dart';
 
+/// A Hierarchical Deterministic key
 class HDKey extends ECKey {
   static const int HARDENED_FLAG = 0x80000000;
 
@@ -33,6 +34,7 @@ class HDKey extends ECKey {
   final int _parentFingerprint;
   int get parentFingerprint => _parentFingerprint;
 
+  /// Generate a HDKey using private key.
   HDKey.withPrivKey(
     BigInt privKey,
     this._chainCode,
@@ -53,6 +55,7 @@ class HDKey extends ECKey {
     }
   }
 
+  /// Generate a HDKey using public key.
   HDKey.withPubKey(
     Uint8List pubKey,
     this._chainCode,
@@ -70,10 +73,12 @@ class HDKey extends ECKey {
     }
   }
 
+  /// Serialize the extended public key.
   String serializePublic(HDExtendedKeyVersion version) {
     return _toBase58(_serialize(version.value, pubKey));
   }
 
+  /// Serialize the extended private key.
   String serializePrivate(HDExtendedKeyVersion version) {
     return _toBase58(_serialize(version.value, getPaddedPrivKeyBytes()));
   }
@@ -96,6 +101,9 @@ class HDKey extends ECKey {
     return base58codec.encode(_addChecksum(ser));
   }
 
+  /// Return private key padded to 33 bytes
+  ///
+  /// @return Padded private key
   Uint8List getPaddedPrivKeyBytes() {
     final paddedBytes = Uint8List(33);
     final length = privKeyBytes!.length;
@@ -106,6 +114,9 @@ class HDKey extends ECKey {
     return paddedBytes;
   }
 
+  /// Return the public key fingerprint
+  ///
+  /// @return Fingerprint
   int getFingerprint() {
     return ((pubKeyHash[0] & 255) << 24) |
         ((pubKeyHash[1] & 255) << 16) |
@@ -113,10 +124,15 @@ class HDKey extends ECKey {
         (pubKeyHash[3] & 255);
   }
 
+  /// Encode the public key to address.
   String encodeAddress() {
     return base58checkCodec.encode(Base58CheckPayload(0, pubKeyHash));
   }
 
+  /// Add the 4-byte checksum to the serialized key
+  ///
+  /// @param input Serialized key
+  /// @return Key plus checksum
   static Uint8List _addChecksum(Uint8List input) {
     final output = BytesBuilder();
     output.add(input);
@@ -126,6 +142,9 @@ class HDKey extends ECKey {
     return output.toBytes();
   }
 
+  /// Get string representation of this key
+  ///
+  /// @return Path string
   @override
   String toString() {
     final stringBuffer = StringBuffer();

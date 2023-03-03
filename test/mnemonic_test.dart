@@ -179,8 +179,8 @@ void main() {
     });
 
     test('validate() success', () {
-      expect(() => Mnemonic.validate(testCases[0][1].split(' ')),
-          returnsNormally);
+      expect(
+          () => Mnemonic.validate(testCases[0][1].split(' ')), returnsNormally);
     });
 
     test('validate() with wrong words count', () {

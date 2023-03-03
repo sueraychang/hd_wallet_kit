@@ -28,23 +28,22 @@ enum EntropyStrength {
   static EntropyStrength _fromWordCount(int wordCount) {
     switch (wordCount) {
       case 12:
-      return EntropyStrength.minimum;
-    case 15:
-      return EntropyStrength.low;
-    case 18:
-      return EntropyStrength.medium;
-    case 21:
-      return EntropyStrength.high;
-    case 24:
-      return EntropyStrength.veryHigh;
-    default:
-      throw InvalidMnemonicCountException(message: 'count: $wordCount');
+        return EntropyStrength.minimum;
+      case 15:
+        return EntropyStrength.low;
+      case 18:
+        return EntropyStrength.medium;
+      case 21:
+        return EntropyStrength.high;
+      case 24:
+        return EntropyStrength.veryHigh;
+      default:
+        throw InvalidMnemonicCountException(message: 'count: $wordCount');
     }
   }
 }
 
 class Mnemonic {
-
   /// Generate mnemonic keys
   static List<String> generate([
     EntropyStrength strength = EntropyStrength.minimum,
